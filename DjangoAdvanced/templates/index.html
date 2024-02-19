@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/static/js/jquery123.js"></script>
+    <script src="/static/js/jquery1234.js"></script>
+
+</head>
+<body>
+    <form id="form" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <input type="file" name="file" id="file" required>
+        <button role="submit" id="formsubmit">Submit</button>
+    </form>
+
+</body>
+
+<script>
+    $(document).ready(function(){
+        $("#form").on('submit',function(e){
+            e.preventDefault()
+            var fileInput = $('#file')[0].files[0];
+            data=new FormData();
+            data.append('file',fileInput)
+            
+            $.ajax({
+                'type':'post',
+                'url':'http://127.0.0.1:8000/product/1/images/',
+                'data':data,
+                contentType: false,
+				processData: false,
+                beforeSend: function (xhr, settings) {
+                    // Add the CSRF token to the request headers
+                    xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
+                },
+                success:function(response){
+                    console.log(response)
+                    
+                    
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr);
+                }
+            })
+        })
+    })
+</script>
+</html>
